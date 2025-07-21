@@ -1,1 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Click the Circle Game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Click the Circle!</h1>
+  <div id="scoreboard">Score: <span id="score">0</span></div>
+  <div id="timer">Time: <span id="time">30</span>s</div>
+  <div id="gameArea"></div>
+  <button id="startBtn">Start Game</button>
+
+  <script>
+    const gameArea = document.getElementById("gameArea");
+    const scoreDisplay = document.getElementById("score");
+    const timerDisplay = document.getElementById("time");
+    const startBtn = document.getElementById("startBtn");
+
+    let score = 0;
+    let timeLeft = 30;
+    let gameInterval;
+    let circle;
+
+    function getRandomPosition() {
+      const x = Math.random() * (gameArea.clientWidth - 50);
+      const y = Math.random() * (gameArea.clientHeight - 50);
+      return { x, y };
+    }
+
+    function createCircle() {
+      if (circle) {
+        gameArea.removeChild(circle);
+      }
+      circle = document.createElement("div");
+      circle.className = "circle";
+      const { x, y } = getRandomPosition();
+      circle.style.left = `${x}px`;
+      circle.style.top = `${y}px`;
+      circle.addEventListener("click", () => {
+        score++;
+        scoreDisplay.textContent = score;
+        createCircle();
+      });
+      gameArea.appendChild(circle);
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreDisplay.textContent = score;
+      timerDisplay.textContent = timeLeft;
+      startBtn.disabled = true;
+      createCircle();
+      gameInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(gameInterval);
+          gameArea.innerHTML = '';
+          startBtn.disabled = false;
+          alert("Time's up! Your score is " + score);
+        }
+      }, 1000);
+    }
+
+    startBtn.addEventListener("click", startGame);
+  </script>
+</body>
+</html>
 
